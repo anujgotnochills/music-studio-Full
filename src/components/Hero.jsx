@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { useClient } from '../context/ClientContext'
+import { useClient, resolveImage } from '../context/ClientContext'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -11,12 +11,38 @@ const frameCount = imagePaths.length
 const currentFrame = (index) => imagePaths[index - 1]
 
 export default function Hero() {
-    const { hero } = useClient()
+    const { hero, about } = useClient()
+    const heroImage = resolveImage(about?.image || 'studio-mixing')
     const canvasRef = useRef(null)
     const containerRef = useRef(null)
     const [imagesLoaded, setImagesLoaded] = useState(0)
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
 
     useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth < 768)
+        window.addEventListener('resize', handleResize)
+        return () => window.removeEventListener('resize', handleResize)
+    }, [])
+
+    useEffect(() => {
+        let ctx;
+        
+        if (isMobile) {
+            // Mobile: Just animate the text in normally
+            ctx = gsap.context(() => {
+                gsap.from('[data-hero-reveal]', {
+                    y: 50,
+                    opacity: 0,
+                    duration: 1.2,
+                    stagger: 0.15,
+                    ease: 'power4.out',
+                    delay: 0.2,
+                })
+            }, containerRef)
+            return () => ctx.revert()
+        }
+
+        // Desktop: Canvas Sequence logic
         const canvas = canvasRef.current
         if (!canvas) return
         const context = canvas.getContext('2d', { alpha: false }) // Performance opt
@@ -58,7 +84,7 @@ export default function Hero() {
             images.push(img)
         }
 
-        const ctx = gsap.context(() => {
+        ctx = gsap.context(() => {
             // Text Entry Animation
             gsap.from('[data-hero-reveal]', {
                 y: 50,
@@ -103,21 +129,25 @@ export default function Hero() {
         resizeCanvas()
 
         return () => {
-            ctx.revert()
+            if (ctx) ctx.revert()
             window.removeEventListener('resize', resizeCanvas)
         }
-    }, [])
+    }, [isMobile])
 
     return (
         <section ref={containerRef} className="relative h-screen bg-black w-full overflow-hidden z-10" id="hero">
-            {imagesLoaded < frameCount && (
-                <div className="absolute inset-0 z-[100] flex items-center justify-center bg-neutral-950 text-brand font-display text-sm tracking-widest uppercase">
-                    <span>Loading Experience... {Math.round((imagesLoaded / frameCount) * 100)}%</span>
-                </div>
+            {isMobile ? (
+                <img src={heroImage} alt="Studio static background" className="absolute inset-0 w-full h-full object-cover" />
+            ) : (
+                <>
+                    {imagesLoaded < frameCount && (
+                        <div className="absolute inset-0 z-[100] flex items-center justify-center bg-neutral-950 text-brand font-display text-sm tracking-widest uppercase">
+                            <span>Loading Experience... {Math.round((imagesLoaded / frameCount) * 100)}%</span>
+                        </div>
+                    )}
+                    <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
+                </>
             )}
-            
-            {/* Canvas layer */}
-            <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
             
             {/* Overlay gradient so text is readable */}
             <div className="absolute inset-0 bg-gradient-to-b from-neutral-950/60 via-neutral-950/20 to-neutral-950/80 pointer-events-none" />
@@ -154,9 +184,11 @@ export default function Hero() {
             </div>
 
             {/* Scroll indicator */}
-            <div className="hero-content-layer absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce hidden md:block text-white/40 z-10">
-                <span className="material-symbols-outlined text-4xl">keyboard_arrow_down</span>
-            </div>
+            {!isMobile && (
+                <div className="hero-content-layer absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce hidden md:block text-white/40 z-10">
+                    <span className="material-symbols-outlined text-4xl">keyboard_arrow_down</span>
+                </div>
+            )}
         </section>
     )
 }

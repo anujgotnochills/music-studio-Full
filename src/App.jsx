@@ -5,6 +5,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 import './index.css'
 import { ClientProvider } from './context/ClientContext'
+import Preloader from './components/Preloader'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import Marquee from './components/Marquee'
@@ -44,6 +45,7 @@ function App() {
   return (
     <ClientProvider>
       <div className="bg-neutral-950 text-white font-body antialiased overflow-x-hidden">
+        <Preloader />
         <Navbar />
         <Hero />
         <Marquee />
