@@ -76,6 +76,16 @@
             "instagram": "",
             "youtube": "https://youtube.com",
             "facebook": ""
+        },
+        "new_wave_music_studio": {
+            "studioName": "New Wave Music Studio",
+            "phone": "+91 83680 52834",
+            "whatsappNumber": "918368052834",
+            "email": "info@newwavemusicstudio.com",
+            "address": "C 1030, Ramphal Chowk Rd, near Gokul Residency, Block C, Sector 7 Dwarka, Dwarka, New Delhi, Delhi 110077",
+            "instagram": "",
+            "youtube": "",
+            "facebook": ""
         }
     }
 }
