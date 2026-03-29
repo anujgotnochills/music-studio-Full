@@ -96,6 +96,16 @@
             "instagram": "https://instagram.com",
             "youtube": "",
             "facebook": ""
+        },
+        "karambhoomi_studios": {
+            "studioName": "Karambhoomi Studios",
+            "phone": "+91 90695 95919",
+            "whatsappNumber": "919069595919",
+            "email": "info@karambhoomistudios.com",
+            "address": "Sunday Market Road New-T 91/A, near Bindapur, Matiala, New Delhi, Delhi 110059",
+            "instagram": "",
+            "youtube": "",
+            "facebook": ""
         }
     }
 }
