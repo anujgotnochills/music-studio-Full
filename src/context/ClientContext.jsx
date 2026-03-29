@@ -1,7 +1,8 @@
-import { createContext, useContext, useEffect } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
+import { supabase } from '../supabase/config'
 import configData from '../client-config.json'
 
-// Resolve the active client from config
+// ── Resolve the active client from config ──────────────────────────
 let activeKey = configData.default
 if (typeof window !== 'undefined') {
     const params = new URLSearchParams(window.location.search)
@@ -11,23 +12,17 @@ if (typeof window !== 'undefined') {
 }
 const activeClient = configData.clients[activeKey] || Object.values(configData.clients)[0]
 
-// Dynamic image imports — maps filename to imported module
+// ── Dynamic image imports (Vite asset resolution) ──────────────────
 const imageModules = import.meta.glob('../assets/*.{png,jpg,jpeg,svg,webp}', { eager: true })
 
-/**
- * Resolves an image filename to its Vite asset URL.
- * e.g. "studio-recording.png" → the resolved asset path
- */
 export function resolveImage(filename) {
     if (!filename) return ''
+    if (filename.startsWith('http://') || filename.startsWith('https://')) return filename
     const key = Object.keys(imageModules).find(k => k.endsWith(`/${filename}`))
     return key ? imageModules[key].default : filename
 }
 
-/**
- * Helper to split a studio name for stylized display.
- * e.g. "SmartClickStudio" stays as-is, "Content Craft Co." → textBefore:"Content Craft", textAccent:"Co."
- */
+// ── Helper: split studio name for stylized display ─────────────────
 function splitName(name) {
     const words = name.trim().split(/\s+/)
     if (words.length === 1) return { textBefore: name, textAccent: '' }
@@ -35,56 +30,54 @@ function splitName(name) {
     return { textBefore: words.join(' '), textAccent: accent }
 }
 
-// Build a unified config from the active client
+// ── Build static (fallback) context from config files ──────────────
 const { textBefore, textAccent } = splitName(activeClient.studioName)
 
-const clientContext = {
-    // Raw client data
+const staticContext = {
     client: activeClient,
     clientKey: activeKey,
-    allClients: configData.clients,
 
-    // Brand
     brand: {
         name: activeClient.studioName,
         shortName: activeClient.studioName,
-        logo: {
-            icon: 'graphic_eq',
-            textBefore,
-            textAccent,
-        },
+        logo: { icon: 'graphic_eq', textBefore, textAccent },
     },
 
-    // Theme
     theme: {
         accentColor: activeClient.accentColor || '#c9a96e',
         bgColor: activeClient.bgColor || '#0a0a0f',
     },
 
-    // Navigation
     nav: {
         links: [
             { label: 'Services', href: '#services' },
             { label: 'Studio', href: '#studio' },
             { label: 'Gallery', href: '#gallery' },
         ],
-        cta: { label: 'Book a Session', href: activeClient.whatsappNumber ? `https://wa.me/${activeClient.whatsappNumber.replace(/[^0-9]/g, '')}?text=${encodeURIComponent('Hi, I would like to book a session.')}` : '#contact' },
+        cta: {
+            label: 'Book a Session',
+            href: activeClient.whatsappNumber
+                ? `https://wa.me/${activeClient.whatsappNumber.replace(/[^0-9]/g, '')}?text=${encodeURIComponent('Hi, I would like to book a session.')}`
+                : '#contact',
+        },
     },
 
-    // Hero
     hero: {
         subtitle: 'Professional Recording Studio',
         headline: 'Where Sound Comes',
         headlineAccent: 'Alive',
         tagline: 'World-class recording. Mixing. Mastering.',
-        ctaPrimary: { label: 'Book a Session', href: activeClient.whatsappNumber ? `https://wa.me/${activeClient.whatsappNumber.replace(/[^0-9]/g, '')}?text=${encodeURIComponent('Hi, I would like to book a session.')}` : '#contact' },
+        ctaPrimary: {
+            label: 'Book a Session',
+            href: activeClient.whatsappNumber
+                ? `https://wa.me/${activeClient.whatsappNumber.replace(/[^0-9]/g, '')}?text=${encodeURIComponent('Hi, I would like to book a session.')}`
+                : '#contact',
+        },
         ctaSecondary: { label: 'Explore Services', href: '#services' },
     },
 
-    // Marquee
     marquee: ['Recording', 'Mixing', 'Mastering', 'Podcast', 'Voice Over', 'Live Sessions', 'Sound Design', 'Production', 'Dolby Atmos', 'Post-Production'],
 
-    // Services
     services: {
         sectionLabel: 'Our Expertise',
         sectionTitle: 'Studio',
@@ -98,7 +91,6 @@ const clientContext = {
         ],
     },
 
-    // About
     about: {
         sectionLabel: 'Our Philosophy',
         title: 'Where Silence Meets',
@@ -114,7 +106,6 @@ const clientContext = {
         image: 'studio-about.png',
     },
 
-    // Stats
     stats: [
         { end: 15, suffix: '+', label: 'Years Experience' },
         { end: 10000, suffix: '+', label: 'Tracks Produced' },
@@ -122,7 +113,6 @@ const clientContext = {
         { end: 99, suffix: '%', label: 'Client Satisfaction' },
     ],
 
-    // Equipment
     equipment: {
         sectionLabel: 'The Studio',
         sectionTitle: 'Our Rooms & Gear',
@@ -138,7 +128,6 @@ const clientContext = {
         ],
     },
 
-    // Artists
     artists: {
         heading: 'Artists Who Trust Us',
         backgroundText: `${activeClient.studioName.toUpperCase()} ${activeClient.studioName.toUpperCase()}`,
@@ -151,7 +140,6 @@ const clientContext = {
         ],
     },
 
-    // Gallery
     gallery: {
         sectionLabel: 'Portfolio',
         sectionTitle: 'Studio Snapshots',
@@ -166,7 +154,6 @@ const clientContext = {
         ],
     },
 
-    // Testimonials
     testimonials: {
         heading: 'What Artists Say',
         items: [
@@ -176,7 +163,12 @@ const clientContext = {
         ],
     },
 
-    // Contact — built from client data
+    videos: {
+        sectionLabel: 'Watch & Listen',
+        sectionTitle: 'Studio Sessions',
+        items: [],
+    },
+
     contact: {
         formHeading: 'Book a Session',
         formTitle: 'Reserve Your Studio Time',
@@ -201,7 +193,6 @@ const clientContext = {
         ].filter(Boolean),
     },
 
-    // Footer
     footer: {
         copyright: `© 2026 ${activeClient.studioName}. All rights reserved.`,
         links: [
@@ -211,30 +202,123 @@ const clientContext = {
     },
 }
 
-const ClientContext = createContext(clientContext)
+// ── Context ────────────────────────────────────────────────────────
+const ClientContext = createContext(staticContext)
 
 export function ClientProvider({ children }) {
+    const [contextData, setContextData] = useState(staticContext)
+    const [databaseReady, setDatabaseReady] = useState(false)
+
     // Inject accent color + bg color as CSS custom properties on mount
     useEffect(() => {
         const root = document.documentElement
-        const accent = clientContext.theme.accentColor
-        const bg = clientContext.theme.bgColor
+        const accent = contextData.theme.accentColor
+        const bg = contextData.theme.bgColor
 
         root.style.setProperty('--color-brand', accent)
-        // Generate a darker variant for hover states
         root.style.setProperty('--color-brand-dark', accent + 'cc')
         root.style.setProperty('--color-bg', bg)
 
-        // Update meta theme-color
         const meta = document.querySelector('meta[name="theme-color"]')
         if (meta) meta.setAttribute('content', bg)
 
-        // Update page title
-        document.title = `${clientContext.brand.name} | Professional Recording, Mixing & Mastering`
+        document.title = `${contextData.brand.name} | Professional Recording, Mixing & Mastering`
+    }, [contextData])
+
+    // ── Supabase data fetching ──────────────────────────────
+    useEffect(() => {
+        if (!supabase) {
+            console.warn('[ClientContext] No Supabase config found — using static fallback data')
+            return
+        }
+
+        async function fetchSupabaseData() {
+            try {
+                // Fetch Testimonials
+                const { data: testimonials } = await supabase.from('testimonials').select('*').order('order', { ascending: true })
+                if (testimonials?.length > 0) {
+                    setContextData(prev => ({
+                        ...prev,
+                        testimonials: {
+                            ...prev.testimonials,
+                            items: testimonials.map(d => ({
+                                id: d.id,
+                                initial: d.initial || d.name?.[0] || '?',
+                                name: d.name,
+                                service: d.service,
+                                quote: d.quote,
+                            })),
+                        },
+                    }))
+                }
+
+                // Fetch Services
+                const { data: services } = await supabase.from('services').select('*').order('order', { ascending: true })
+                if (services?.length > 0) {
+                    setContextData(prev => ({
+                        ...prev,
+                        services: {
+                            ...prev.services,
+                            items: services.map((d, i) => ({
+                                id: d.id,
+                                title: d.title,
+                                price: d.price,
+                                unit: d.unit,
+                                icon: d.icon || 'music_note',
+                                image: d.imageUrl || '',
+                                features: d.features || [],
+                                description: d.description || '',
+                            })),
+                        },
+                    }))
+                }
+
+                // Fetch Gallery
+                const { data: gallery } = await supabase.from('gallery').select('*').order('order', { ascending: true })
+                if (gallery?.length > 0) {
+                    setContextData(prev => ({
+                        ...prev,
+                        gallery: {
+                            ...prev.gallery,
+                            items: gallery.map(d => ({
+                                id: d.id,
+                                image: d.imageUrl || '',
+                                alt: d.alt || d.label || '',
+                                label: d.label || '',
+                            })),
+                        },
+                    }))
+                }
+
+                // Fetch Videos
+                const { data: videos } = await supabase.from('videos').select('*').order('order', { ascending: true })
+                if (videos) {
+                    setContextData(prev => ({
+                        ...prev,
+                        videos: {
+                            ...prev.videos,
+                            items: videos.map(d => ({
+                                id: d.id,
+                                title: d.title || '',
+                                description: d.description || '',
+                                videoUrl: d.videoUrl || '',
+                                thumbnailUrl: d.thumbnailUrl || '',
+                            })),
+                        },
+                    }))
+                }
+                
+                setDatabaseReady(true)
+            } catch (err) {
+                console.error('[Supabase] Failed to fetch data:', err)
+            }
+        }
+
+        fetchSupabaseData()
     }, [])
 
     return (
-        <ClientContext.Provider value={clientContext}>
+        <ClientContext.Provider value={{ ...contextData, databaseReady }}>
             {children}
         </ClientContext.Provider>
     )

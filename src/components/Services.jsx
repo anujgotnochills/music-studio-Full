@@ -40,7 +40,7 @@ export default function Services() {
             }
         }, sectionRef)
         return () => ctx.revert()
-    }, [isMobile])
+    }, [isMobile, services])
 
     useEffect(() => {
         if (!isMobile) return
@@ -57,7 +57,7 @@ export default function Services() {
             })
         }, sectionRef)
         return () => ctx.revert()
-    }, [isMobile])
+    }, [isMobile, services])
 
     const displayIndex = hoverIndex !== null ? hoverIndex : activeIndex
 
@@ -83,7 +83,7 @@ export default function Services() {
                                 <div className={`group relative h-[350px] overflow-hidden cursor-pointer transition-all duration-700 ${displayIndex === i ? 'border border-brand/40' : 'border border-white/10'}`}>
                                     <img src={service.image} alt={service.title} className="absolute inset-0 w-full h-full object-cover" />
                                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent opacity-80" />
-                                    <div className="absolute top-4 left-4 z-10"><span className="font-display text-5xl font-bold text-brand/20">0{service.id}</span></div>
+                                    <div className="absolute top-4 left-4 z-10"><span className="font-display text-5xl font-bold text-brand/20">0{i + 1}</span></div>
                                     <div className="absolute top-4 right-4 z-10 w-10 h-10 border border-white/20 flex items-center justify-center">
                                         <span className="material-symbols-outlined text-brand text-xl">{service.icon}</span>
                                     </div>
@@ -128,7 +128,7 @@ export default function Services() {
                             <div className={`group relative w-full h-[80vh] overflow-hidden cursor-pointer transition-all duration-700 ${displayIndex === i ? 'border border-brand/40' : 'border border-white/10'}`}>
                                 <img src={service.image} alt={service.title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1.2s] ease-out group-hover:scale-110" />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-500" />
-                                <div className="absolute top-6 left-6 z-10"><span className="font-display text-7xl font-bold text-brand/20 group-hover:text-brand/40 transition-colors duration-500">0{service.id}</span></div>
+                                <div className="absolute top-6 left-6 z-10"><span className="font-display text-7xl font-bold text-brand/20 group-hover:text-brand/40 transition-colors duration-500">0{i + 1}</span></div>
                                 <div className="absolute top-6 right-6 z-10 w-12 h-12 border border-white/20 group-hover:border-brand/50 flex items-center justify-center transition-all duration-500 group-hover:rotate-12">
                                     <span className="material-symbols-outlined text-brand text-2xl">{service.icon}</span>
                                 </div>

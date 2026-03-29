@@ -26,7 +26,7 @@ export default function Hero() {
 
     useEffect(() => {
         let ctx;
-        
+
         if (isMobile) {
             // Mobile: Just animate the text in normally
             ctx = gsap.context(() => {
@@ -57,7 +57,7 @@ export default function Hero() {
             const ratio = Math.max(hRatio, vRatio)
             const centerShift_x = (canvas.width - img.width * ratio) / 2
             const centerShift_y = (canvas.height - img.height * ratio) / 2
-            
+
             context.fillStyle = '#0a0a0f'
             context.fillRect(0, 0, canvas.width, canvas.height)
             context.drawImage(img, 0, 0, img.width, img.height,
@@ -148,20 +148,20 @@ export default function Hero() {
                     <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
                 </>
             )}
-            
+
             {/* Overlay gradient so text is readable */}
             <div className="absolute inset-0 bg-gradient-to-b from-neutral-950/60 via-neutral-950/20 to-neutral-950/80 pointer-events-none" />
-            
+
             {/* Content layer */}
-            <div className="hero-content-layer absolute inset-0 flex flex-col items-center justify-center pointer-events-auto px-4 text-center z-10">
+            <div className="hero-content-layer absolute inset-0 flex flex-col items-center justify-center pointer-events-auto px-4 pt-24 sm:pt-0 text-center z-10">
                 <div data-hero-reveal className="h-px w-24 bg-brand mb-6 opacity-50" />
                 <h2 data-hero-reveal className="text-white/70 font-body text-sm md:text-base uppercase tracking-[0.3em] font-bold">
                     {hero.subtitle}
                 </h2>
-                <h1 data-hero-reveal className="font-display text-5xl md:text-7xl lg:text-8xl font-medium text-white leading-tight tracking-tight mt-6 mb-6">
-                    {hero.headline} <span className="italic text-brand">{hero.headlineAccent}</span>
+                <h1 data-hero-reveal className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-medium text-white leading-[1.1] tracking-tight mt-6 mb-6 px-2">
+                    {hero.headline} <span className="italic text-brand block sm:inline">{hero.headlineAccent}</span>
                 </h1>
-                <p data-hero-reveal className="font-display text-xl md:text-2xl text-white/60 italic max-w-2xl font-medium mb-10">
+                <p data-hero-reveal className="font-display text-lg sm:text-xl md:text-2xl text-white/60 italic max-w-2xl font-medium mb-10 px-4">
                     {hero.tagline}
                 </p>
                 <div data-hero-reveal className="mt-4 flex flex-col sm:flex-row gap-4">

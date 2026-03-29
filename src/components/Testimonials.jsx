@@ -25,7 +25,7 @@ export default function Testimonials() {
                     {testimonials.items.map((t) => (
                         <div key={t.name} data-reveal className="bg-neutral-900/50 p-8 rounded-lg border border-white/5 hover:border-brand/30 transition-all duration-500 hover:-translate-y-1 shadow-sm backdrop-blur-sm">
                             <Stars />
-                            <p className="text-white/50 font-light italic mb-6 leading-relaxed">"{t.quote}"</p>
+                            <p className="text-white/50 font-light italic mb-6 leading-relaxed break-words">"{t.quote}"</p>
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 rounded-full bg-neutral-800 border border-brand/20 flex items-center justify-center text-brand font-display font-bold">{t.initial}</div>
                                 <div>
