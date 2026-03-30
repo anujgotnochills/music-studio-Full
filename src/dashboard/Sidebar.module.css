@@ -179,6 +179,13 @@
     align-items: center;
     justify-content: center;
     backdrop-filter: blur(12px);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mobileToggle.active {
+    background: rgba(20, 20, 28, 0.98);
+    border-color: rgba(201, 169, 110, 0.3);
+    color: #c9a96e;
 }
 
 .overlay {
@@ -197,7 +204,10 @@
         transform: translateX(0);
     }
     .sidebarHeader {
-        padding-top: 4.5rem;
+        padding: 1.1rem 1.25rem 1.1rem 4.5rem;
+    }
+    .sidebarHeader .logoIcon {
+        display: none;
     }
     .mobileToggle {
         display: flex;

@@ -21,7 +21,7 @@ export default function Sidebar({ activeSection, onSectionChange, isOpen, onTogg
         <>
             {/* Mobile hamburger */}
             <button
-                className={styles.mobileToggle}
+                className={`${styles.mobileToggle} ${isOpen ? styles.active : ''}`}
                 onClick={onToggle}
                 aria-label={isOpen ? "Close menu" : "Open menu"}
             >
