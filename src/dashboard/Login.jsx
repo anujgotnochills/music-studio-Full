@@ -6,6 +6,7 @@ export default function Login() {
     const { login } = useAuth()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [showPassword, setShowPassword] = useState(false)
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
 
@@ -55,15 +56,28 @@ export default function Login() {
                     </div>
                     <div className={styles.formGroup}>
                         <label htmlFor="login-password">Password</label>
-                        <input
-                            id="login-password"
-                            type="password"
-                            placeholder="••••••••"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                            autoComplete="current-password"
-                        />
+                        <div className={styles.passwordWrapper}>
+                            <input
+                                id="login-password"
+                                type={showPassword ? 'text' : 'password'}
+                                className={styles.passwordInput}
+                                placeholder="••••••••"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                                autoComplete="current-password"
+                            />
+                            <button
+                                type="button"
+                                className={styles.togglePassword}
+                                onClick={() => setShowPassword(!showPassword)}
+                                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                            >
+                                <span className="material-symbols-outlined">
+                                    {showPassword ? 'visibility_off' : 'visibility'}
+                                </span>
+                            </button>
+                        </div>
                     </div>
                     <button
                         type="submit"

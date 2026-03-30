@@ -23,9 +23,11 @@ export default function Sidebar({ activeSection, onSectionChange, isOpen, onTogg
             <button
                 className={styles.mobileToggle}
                 onClick={onToggle}
-                aria-label="Open menu"
+                aria-label={isOpen ? "Close menu" : "Open menu"}
             >
-                <span className="material-symbols-outlined">menu</span>
+                <span className="material-symbols-outlined">
+                    {isOpen ? 'close' : 'menu'}
+                </span>
             </button>
 
             {/* Mobile overlay */}

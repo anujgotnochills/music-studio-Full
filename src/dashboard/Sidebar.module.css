@@ -196,6 +196,9 @@
     .sidebar.open {
         transform: translateX(0);
     }
+    .sidebarHeader {
+        padding-top: 4.5rem;
+    }
     .mobileToggle {
         display: flex;
     }
