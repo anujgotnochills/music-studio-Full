@@ -28,21 +28,34 @@ gsap.registerPlugin(ScrollTrigger)
 // ── Portfolio Site (public) ────────────────────────────────────
 function PortfolioSite() {
   useEffect(() => {
+    // ── Global Smooth Scroll (Lenis) ───────────────────────────
     const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      lerp: 0.1,             // Smoothing amount (0 to 1)
+      duration: 1.5,         // Scroll duration
       smoothWheel: true,
+      infinite: false,
     })
 
+    // Sync ScrollTrigger with Lenis
     lenis.on('scroll', ScrollTrigger.update)
 
+    // Ensure ScrollTrigger updates correctly on every RAF
     gsap.ticker.add((time) => {
       lenis.raf(time * 1000)
     })
+    
+    // Smooth out mobile-specific scroll issues (address bar resize, etc.)
+    ScrollTrigger.normalizeScroll({
+      allowNestedScroll: true, 
+      type: 'touch,pointer'
+    })
+    
     gsap.ticker.lagSmoothing(0)
 
     return () => {
       lenis.destroy()
+      gsap.ticker.remove(lenis.raf)
+      ScrollTrigger.normalizeScroll(false)
     }
   }, [])
 

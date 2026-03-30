@@ -94,7 +94,7 @@ export default function Hero() {
                     trigger: containerRef.current,
                     start: 'top top',
                     end: '+=250%', // Reduced from 400% to make it faster
-                    scrub: 0.5,    // smooth scrubbing
+                    scrub: isMobile ? 1 : 0.5,    // Smoother scrubbing on mobile to match Lenis
                     pin: true,     // pin section
                     anticipatePin: 1,
                 },
